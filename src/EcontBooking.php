@@ -7,9 +7,6 @@ namespace Sylapi\Courier\Econt;
 use Rakit\Validation\Validator;
 use Sylapi\Courier\Abstracts\Booking;
 
-/**
- * @var mixed $requestTimeFrom 
- **/
 class EcontBooking extends Booking
 {
     public function validate(): bool
