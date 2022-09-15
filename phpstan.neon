@@ -1,0 +1,11 @@
+parameters:
+	level: 5
+	paths:
+		- src
+		- tests
+	universalObjectCratesClasses:
+		- ArrayObject
+		- stdClass
+		- Sylapi\Courier\Contracts\Response
+		- Sylapi\Courier\Contracts\Booking
+	checkGenericClassInNonGenericObjectType: false
