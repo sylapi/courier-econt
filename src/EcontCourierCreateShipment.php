@@ -58,13 +58,11 @@ class EcontCourierCreateShipment implements CourierCreateShipment
             $exception = new TransportException($e->getMessage(), $e->getCode());
             ResponseHelper::pushErrorsToResponse($response, [$exception]);
         } catch (Exception $e) {
-            $exception = new TransportException($e->getMessage(), $e->getCode());
+            $exception = new TransportException($e->getMessage(), $e->getCode());       
             ResponseHelper::pushErrorsToResponse($response, [$exception]);
         }
         return $response;
     }
-
-    // $shipment->getSender()->getFullName();
 
     private function request(Shipment $shipment): array   
     {
@@ -108,10 +106,10 @@ class EcontCourierCreateShipment implements CourierCreateShipment
                 'packCount' => 1,
                 'shipmentType' => 'PACK',
                 'weight' => $shipment->getParcel()->getWeight(),
-                'shipmentDescription' => $shipment->getContent()                              
+                'shipmentDescription' => $shipment->getContent(),
+                'holidayDeliveryDay' => 'workday',                          
             ],
-            'mode' => 'validate'
-            // 'mode' => 'create'            
+            'mode' => 'create'            
         ];
     }
 }
