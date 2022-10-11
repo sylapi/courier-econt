@@ -9,10 +9,12 @@ use Exception;
 use Sylapi\Courier\Entities\Response;
 use Sylapi\Courier\Contracts\Shipment;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ServerException;
 use Sylapi\Courier\Exceptions\TransportException;
 use Sylapi\Courier\Contracts\CourierCreateShipment;
 use Sylapi\Courier\Contracts\Response as ResponseContract;
 use Sylapi\Courier\Helpers\ResponseHelper;
+use Sylapi\Courier\Econt\Helpers\EcontApiErrorsHelper;
 
 
 class EcontCourierCreateShipment implements CourierCreateShipment
@@ -56,6 +58,12 @@ class EcontCourierCreateShipment implements CourierCreateShipment
         
         } catch (ClientException $e) {
             $exception = new TransportException($e->getMessage(), $e->getCode());
+            ResponseHelper::pushErrorsToResponse($response, [$exception]);
+        } 
+        catch (ServerException $e) {
+            $responseBody = $e->getResponse()->getBody()->getContents();
+            $message = EcontApiErrorsHelper::buildErrorMessage($responseBody);
+            $exception = new TransportException($message, $e->getCode());
             ResponseHelper::pushErrorsToResponse($response, [$exception]);
         } catch (Exception $e) {
             $exception = new TransportException($e->getMessage(), $e->getCode());       
