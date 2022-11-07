@@ -32,7 +32,6 @@ class EcontCourierCreateShipment implements CourierCreateShipment
     {
         $response = new Response();
         try {
-            // var_dump($this->request($shipment));
             $stream = $this->session
             ->client()
             ->request(
@@ -74,35 +73,49 @@ class EcontCourierCreateShipment implements CourierCreateShipment
 
     private function request(Shipment $shipment): array   
     {
-        return [
+        $parameters = $this->session->parameters();
+
+        $request = [
             'label' => [
                 'senderClient' => [
                     'name' => $shipment->getSender()->getFullName(),
                     'phones' => [
                         $shipment->getSender()->getPhone()
-                    ]                    
+                    ],
+                    'email' => $shipment->getSender()->getEmail()
+                ],
+                'senderAgent' => [
+                    'name' => $shipment->getSender()->getContactPerson(),
+                    'phones' => [
+                        $shipment->getSender()->getPhone()
+                    ],
+                    'email' => $shipment->getSender()->getEmail()                   
                 ],
                 'senderAddress' => [
                     'city' => [
                         'country' => [
-                            'code3' => $shipment->getSender()->getCountryCode()
+                            'code3' => $shipment->getSender()->getCountryCode(),
+                            'name' => $shipment->getSender()->getCountry(),
                         ],
                         'name' => $shipment->getSender()->getCity(),
                         'postCode' => $shipment->getSender()->getZipCode()
                     ],
                     'street' => $shipment->getSender()->getStreet(),
                     'num' => trim($shipment->getSender()->getHouseNumber().' '.$shipment->getSender()->getApartmentNumber()),
-                ],                
+                ],
                 'receiverClient' => [
                     'name' => $shipment->getReceiver()->getFullName(),
                     'phones' => [
                         $shipment->getReceiver()->getPhone()
-                    ]
+                    ],
+                    'email' => $shipment->getReceiver()->getEmail()
                 ],
+
                 'receiverAddress' => [
                     "city" => [
                         'country' => [
-                            'code3' => $shipment->getReceiver()->getCountryCode()
+                            'code3' => $shipment->getReceiver()->getCountryCode(),
+                            'name' => $shipment->getReceiver()->getCountry(),
                         ],
                         'name' => $shipment->getReceiver()->getCity(),
                         "postCode" => $shipment->getReceiver()->getZipCode()
@@ -111,13 +124,30 @@ class EcontCourierCreateShipment implements CourierCreateShipment
                     'num' => trim($shipment->getReceiver()->getHouseNumber().' '.$shipment->getReceiver()->getApartmentNumber()),
                     'other' => ''
                 ],
-                'packCount' => 1,
-                'shipmentType' => 'PACK',
+                'packCount' =>  $shipment->getQuantity(),
+                'shipmentType' => ($parameters->hasProperty('shipmentType')) ? $parameters->shipmentType : 'PACK',
                 'weight' => $shipment->getParcel()->getWeight(),
-                'shipmentDescription' => $shipment->getContent(),
-                'holidayDeliveryDay' => 'workday',                          
+                'shipmentDescription' => $shipment->getContent(),                            
             ],
-            'mode' => 'create'            
+            'mode' => ($parameters->hasProperty('mode')) ? $parameters->mode : 'create', 
         ];
+
+        if($parameters->hasProperty('senderClientNumber')) {
+            $request['label']['senderClient']['clientNumber'] = $parameters->senderClientNumber;
+        }
+
+        if($parameters->hasProperty('senderOfficeCode')) {
+            $request['label']['senderOfficeCode'] = $parameters->senderOfficeCode;
+        }
+
+        if($parameters->hasProperty('paymentSenderMethod')) {
+            $request['label']['paymentSenderMethod'] = $parameters->paymentSenderMethod;
+        }  
+        
+        if($parameters->hasProperty('holidayDeliveryDay')) {
+            $request['label']['holidayDeliveryDay'] = $parameters->holidayDeliveryDay;
+        }          
+
+        return $request;
     }
 }
