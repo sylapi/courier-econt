@@ -2,19 +2,19 @@
 
 namespace Sylapi\Courier\Econt\Tests\Integration;
 
+use Sylapi\Courier\Econt\Responses\Parcel as ParcelResponse;
+use Sylapi\Courier\Econt\Entities\Booking;
+use Sylapi\Courier\Econt\CourierPostShipment;
 use PHPUnit\Framework\TestCase as PHPUnitTestCase;
-use Sylapi\Courier\Contracts\Response;
-use Sylapi\Courier\Econt\EcontBooking;
-use Sylapi\Courier\Econt\EcontCourierPostShipment;
-use Sylapi\Courier\Econt\Tests\Helpers\EcontSessionTrait;
+use Sylapi\Courier\Econt\Tests\Helpers\SessionTrait;
 
 class CourierPostShipmentTest extends PHPUnitTestCase
 {
-    use EcontSessionTrait;
+    use SessionTrait;
 
     private function getBookingMock($shipmentId)
     {
-        $bookingMock = $this->createMock(EcontBooking::class);
+        $bookingMock = $this->createMock(Booking::class);
         $bookingMock->method('getShipmentId')->willReturn($shipmentId);
         $bookingMock->method('validate')->willReturn(true);
 
@@ -31,15 +31,12 @@ class CourierPostShipmentTest extends PHPUnitTestCase
             ],
         ]);
 
-        $econtCourierCreateShipment = new EcontCourierPostShipment($sessionMock);
+        $courierCreateShipment = new CourierPostShipment($sessionMock);
         $shipmentId = 1234567890;
         $booking = $this->getBookingMock($shipmentId);
-        $response = $econtCourierCreateShipment->postShipment($booking);
+        $response = $courierCreateShipment->postShipment($booking);
 
-    
-        $this->assertInstanceOf(Response::class, $response);
-        $this->assertObjectHasAttribute('courierRequestID', $response);
-        $this->assertNotEmpty($response->courierRequestID);
-        $this->assertEquals('2018040000000954', $response->courierRequestID);
+        $this->assertInstanceOf(ParcelResponse::class, $response);
+        $this->assertEquals('2018040000000954', $response->getCourierRequestId());
     }
 }

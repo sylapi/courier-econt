@@ -2,14 +2,14 @@
 
 namespace Sylapi\Courier\Econt\Tests\Helpers;
 
-use GuzzleHttp\Client as HttpClient;
-use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
-use Sylapi\Courier\Econt\EcontParameters;
-use Sylapi\Courier\Econt\EcontSession;
+use Sylapi\Courier\Econt\Session;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\Client as HttpClient;
 
-trait EcontSessionTrait
+
+trait SessionTrait
 {
     /**
      * @param array<array<mixed,mixed>> $responses
@@ -27,13 +27,9 @@ trait EcontSessionTrait
         $handlerStack = HandlerStack::create($mock);
         $client = new HttpClient(['handler' => $handlerStack]);
 
-        $parametersMock = $this->createMock(EcontParameters::class);
-
-        $sessionMock = $this->createMock(EcontSession::class);
+        $sessionMock = $this->createMock(Session::class);
         $sessionMock->method('client')
             ->willReturn($client);
-        $sessionMock->method('parameters')
-            ->willReturn($parametersMock);
 
         return $sessionMock;
     }

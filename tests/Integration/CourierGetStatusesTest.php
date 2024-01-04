@@ -4,18 +4,17 @@ namespace Sylapi\Courier\Econt\Tests\Integration;
 
 use Sylapi\Courier\Contracts\Status;
 use Sylapi\Courier\Enums\StatusType;
-use Sylapi\Courier\Econt\EcontCourierGetStatuses;
+use Sylapi\Courier\Econt\CourierGetStatuses;
 use PHPUnit\Framework\TestCase as PHPUnitTestCase;
-use Sylapi\Courier\Econt\Tests\Helpers\EcontSessionTrait;
+use Sylapi\Courier\Econt\Tests\Helpers\SessionTrait;
+
 
 class CourierGetStatusesTest extends PHPUnitTestCase
 {
-    use EcontSessionTrait;
+    use SessionTrait;
 
     public function testGetStatusSuccess(): void
     {
-
-
         $sessionMock = $this->getSessionMock([
             [
                 'code'   => 200,
@@ -24,11 +23,10 @@ class CourierGetStatusesTest extends PHPUnitTestCase
             ],
         ]);
 
-        $econtCourierGetStatuses = new EcontCourierGetStatuses($sessionMock);
+        $courierGetStatuses = new CourierGetStatuses($sessionMock);
 
-        $response = $econtCourierGetStatuses->getStatus('123');
-        $this->assertInstanceOf(Status::class, $response);
-        $this->assertEquals((string) $response, StatusType::SENT);
+        $response = $courierGetStatuses->getStatus('123');
+        $this->assertEquals($response, StatusType::SENT->value);
 
 
     }
