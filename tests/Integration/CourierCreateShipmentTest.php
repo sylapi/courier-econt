@@ -8,6 +8,7 @@ use Sylapi\Courier\Econt\Entities\Receiver;
 use Sylapi\Courier\Econt\Entities\Shipment;
 use Sylapi\Courier\Econt\CourierCreateShipment;
 use PHPUnit\Framework\TestCase as PHPUnitTestCase;
+use Sylapi\Courier\Econt\Entities\Options;
 use Sylapi\Courier\Econt\Tests\Helpers\SessionTrait;
 use Sylapi\Courier\Econt\Responses\Shipment as ResponsesShipment;
 
@@ -22,10 +23,12 @@ class CourierCreateShipmentTest extends PHPUnitTestCase
         $senderMock = $this->createMock(Sender::class);
         $receiverMock = $this->createMock(Receiver::class);
         $parcelMock = $this->createMock(Parcel::class);
+        $optionsMock = $this->createMock(Options::class);
 
         $shipmentMock->method('getSender')->willReturn($senderMock);
         $shipmentMock->method('getReceiver')->willReturn($receiverMock);
         $shipmentMock->method('getParcel')->willReturn($parcelMock);
+        $shipmentMock->method('getOptions')->willReturn($optionsMock);
         $shipmentMock->method('getContent')->willReturn('Description');
         $shipmentMock->method('validate')->willReturn(true);
 

@@ -11,6 +11,6 @@ class StatusTransformerTest extends PHPUnitTestCase
     public function testStatusTransformer(): void
     {
         $statusTransformer = new StatusTransformer('reject');
-        $this->assertEquals(StatusType::CANCELLED, (string) $statusTransformer);
+        $this->assertEquals(StatusType::CANCELLED->value, (string) $statusTransformer);
     }
 }

@@ -50,7 +50,7 @@ class CourierPostShipment implements CourierPostShipmentContract
                 throw new TransportException('Request courier id does not exist.');
             }
 
-            $response->setCourierRequestId($result->courierRequestId);
+            $response->setCourierRequestId($courierRequestId);
 
 
         } catch (ClientException $e) {
