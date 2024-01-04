@@ -8,7 +8,7 @@ use Sylapi\Courier\Econt\EcontCourierGetStatuses;
 use PHPUnit\Framework\TestCase as PHPUnitTestCase;
 use Sylapi\Courier\Econt\Tests\Helpers\EcontSessionTrait;
 
-class EcontCourierGetStatusesTest extends PHPUnitTestCase
+class CourierGetStatusesTest extends PHPUnitTestCase
 {
     use EcontSessionTrait;
 

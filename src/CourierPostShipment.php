@@ -6,27 +6,27 @@ namespace Sylapi\Courier\Econt;
 
 use Exception;
 use Sylapi\Courier\Contracts\Booking;
-use Sylapi\Courier\Entities\Response;
+use Sylapi\Courier\Econt\Responses\Parcel as ParcelResponse;
 use GuzzleHttp\Exception\ClientException;
 use Sylapi\Courier\Helpers\ResponseHelper;
-use Sylapi\Courier\Contracts\CourierPostShipment;
 use Sylapi\Courier\Exceptions\TransportException;
 use Sylapi\Courier\Contracts\Response as ResponseContract;
+use Sylapi\Courier\Contracts\CourierPostShipment as CourierPostShipmentContract;
 
-class EcontCourierPostShipment implements CourierPostShipment
+class CourierPostShipment implements CourierPostShipmentContract
 {
     private $session;
 
     const API_PATH = '/services/Shipments/ShipmentService.requestCourier.json';
 
-    public function __construct(EcontSession $session)
+    public function __construct(Session $session)
     {
         $this->session = $session;
     }
 
     public function postShipment(Booking $booking): ResponseContract
     {
-        $response = new Response();
+        $response = new ParcelResponse();
         try {
             $stream = $this->session
             ->client()
@@ -44,17 +44,19 @@ class EcontCourierPostShipment implements CourierPostShipment
                 throw new TransportException('Json data response is incorrect');
             }
 
-            $response->courierRequestID = $result->courierRequestID ?? NULL;
+            $courierRequestId = $result->courierRequestID ?? NULL;
 
-            if($response->courierRequestID === NULL){
+            if($courierRequestId === NULL){
                 throw new TransportException('Request courier id does not exist.');
             }
+
+            $response->setCourierRequestId($result->courierRequestId);
+
+
         } catch (ClientException $e) {
-            $exception = new TransportException($e->getMessage(), $e->getCode());
-            ResponseHelper::pushErrorsToResponse($response, [$exception]);
+            throw new TransportException($e->getMessage(), $e->getCode());
         } catch (Exception $e) {
-            $exception = new TransportException($e->getMessage(), $e->getCode());
-            ResponseHelper::pushErrorsToResponse($response, [$exception]);
+            throw new TransportException($e->getMessage(), $e->getCode());
         }
 
         return $response;

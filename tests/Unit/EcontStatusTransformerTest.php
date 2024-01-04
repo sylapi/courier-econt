@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase as PHPUnitTestCase;
 use Sylapi\Courier\Enums\StatusType;
 use Sylapi\Courier\Econt\EcontStatusTransformer;
 
-class EcontStatusTransformerTest extends PHPUnitTestCase
+class StatusTransformerTest extends PHPUnitTestCase
 {
     public function testStatusTransformer(): void
     {

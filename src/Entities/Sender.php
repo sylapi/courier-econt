@@ -2,24 +2,23 @@
 
 declare(strict_types=1);
 
-namespace Sylapi\Courier\Econt;
+namespace Sylapi\Courier\Econt\Entities;
 
 use Rakit\Validation\Validator;
-use Sylapi\Courier\Abstracts\Receiver;
+use Sylapi\Courier\Abstracts\Sender as SenderAbstract;
 
-class EcontReceiver extends Receiver
+class Sender extends SenderAbstract
 {
     public function validate(): bool
     {
         $rules = [
-            'firstName'   => 'required',
-            'surname'     => 'required',
+            'fullName'    => 'required',
+            'address'     => 'required',
             'countryCode' => 'required|min:2|max:2',
             'city'        => 'required',
             'zipCode'     => 'required',
-            'street'      => 'required',
-            'address'     => 'required',
-            'email'       => 'required|email',
+            'email'       => 'nullable|email',
+            'phone'       => 'required',
         ];
 
         $data = $this->toArray();

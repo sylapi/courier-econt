@@ -11,7 +11,7 @@ use Sylapi\Courier\Econt\EcontSender;
 use Sylapi\Courier\Econt\EcontShipment;
 use Sylapi\Courier\Econt\Tests\Helpers\EcontSessionTrait;
 
-class EcontCourierCreateShipmentTest extends PHPUnitTestCase
+class CourierCreateShipmentTest extends PHPUnitTestCase
 {
     use EcontSessionTrait;
 

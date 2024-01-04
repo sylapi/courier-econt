@@ -7,7 +7,7 @@ use Sylapi\Courier\Contracts\Label;
 use Sylapi\Courier\Econt\EcontCourierGetLabels;
 use Sylapi\Courier\Econt\Tests\Helpers\EcontSessionTrait;
 
-class EcontCourierGetLabelsTest extends PHPUnitTestCase
+class CourierGetLabelsTest extends PHPUnitTestCase
 {
     use EcontSessionTrait;
 

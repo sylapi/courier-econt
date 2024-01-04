@@ -8,7 +8,7 @@ use Sylapi\Courier\Econt\EcontBooking;
 use Sylapi\Courier\Econt\EcontCourierPostShipment;
 use Sylapi\Courier\Econt\Tests\Helpers\EcontSessionTrait;
 
-class EcontCourierPostShipmentTest extends PHPUnitTestCase
+class CourierPostShipmentTest extends PHPUnitTestCase
 {
     use EcontSessionTrait;
 

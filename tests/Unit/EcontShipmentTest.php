@@ -8,7 +8,7 @@ use Sylapi\Courier\Econt\EcontReceiver;
 use Sylapi\Courier\Econt\EcontSender;
 use Sylapi\Courier\Econt\EcontShipment;
 
-class EcontShipmentTest extends PHPUnitTestCase
+class ShipmentTest extends PHPUnitTestCase
 {
     public function testNumberOfPackagesIsAlwaysEqualTo1(): void
     {

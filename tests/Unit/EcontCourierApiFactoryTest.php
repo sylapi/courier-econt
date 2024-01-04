@@ -14,7 +14,7 @@ use Sylapi\Courier\Econt\EcontSession;
 use Sylapi\Courier\Econt\EcontSessionFactory;
 use Sylapi\Courier\Econt\EcontShipment;
 
-class EcontCourierApiFactoryTest extends PHPUnitTestCase
+class CourierApiFactoryTest extends PHPUnitTestCase
 {
     /**
      * @var array<string,mixed>

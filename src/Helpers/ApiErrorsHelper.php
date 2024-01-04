@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Sylapi\Courier\Econt\Helpers;
 
-
-class EcontApiErrorsHelper
+class ApiErrorsHelper
 {
 
     public static function buildErrorMessage(string $errors): ?string

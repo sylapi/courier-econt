@@ -5,30 +5,26 @@ declare(strict_types=1);
 namespace Sylapi\Courier\Econt;
 
 use Exception;
-use Sylapi\Courier\Entities\Status;
-use Sylapi\Courier\Enums\StatusType;
-use Sylapi\Courier\Econt\EcontSession;
 use GuzzleHttp\Exception\ClientException;
-use Sylapi\Courier\Contracts\CourierGetStatuses;
+use Sylapi\Courier\Contracts\CourierGetLabels as CourierGetLabelsContract;
 use Sylapi\Courier\Exceptions\TransportException;
-use Sylapi\Courier\Contracts\Status as StatusContract;
+use Sylapi\Courier\Contracts\LabelType as LabelTypeContract;
+use Sylapi\Courier\Econt\Responses\Label as LabelResponse;
+use Sylapi\Courier\Contracts\Response as ResponseContract;
 
-
-class EcontCourierGetStatuses implements CourierGetStatuses
+class CourierGetLabels implements CourierGetLabelsContract
 {
     private $session;
 
-    const API_PATH = '/services/Shipments/ShipmentService.getRequestCourierStatus.json';
+    const API_PATH = '/services/Shipments/ShipmentService.getShipmentStatuses.json';
 
-    public function __construct(EcontSession $session)
+    public function __construct(Session $session)
     {
         $this->session = $session;
     }
 
-    public function getStatus(string $shipmentId): StatusContract
+    public function getLabel(string $shipmentId, LabelTypeContract $labelType): ResponseContract
     {
-        $statusDescription = null;
-
         try {
             $stream = $this->session
             ->client()
@@ -46,27 +42,25 @@ class EcontCourierGetStatuses implements CourierGetStatuses
                 throw new TransportException('Json data response is incorrect');
             }
 
-            $statusName =  isset($result->requestCourierStatus[0]->status->status) ?
-                new EcontStatusTransformer((string) $result->requestCourierStatus[0]->status->status)
-                : StatusType::APP_RESPONSE_ERROR;
-                
+            $labelUrl = $result->shipmentStatuses[0]->status->pdfURL ?? NULL;
+
+            if($labelUrl === NULL){
+                throw new TransportException('Label does not exist.');
+            }
+
         } catch (ClientException $e) {
             throw new TransportException($e->getMessage(), $e->getCode());
         } catch (Exception $e) {
             throw new TransportException($e->getMessage(), $e->getCode());
         }
-
-
-        return new Status((string) $statusName);
+        return new LabelResponse($labelUrl);
     }
 
 
     private function request(string $shipmentId): array   
     {
         return [
-            'requestCourierIds' => [
-                $shipmentId
-            ]
+            'shipmentNumbers' => [ $shipmentId ]
         ];
-    }
+    }    
 }

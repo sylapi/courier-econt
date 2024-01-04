@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Sylapi\Courier\Econt;
+namespace Sylapi\Courier\Econt\Entities;
 
 use Rakit\Validation\Validator;
-use Sylapi\Courier\Abstracts\Parcel;
+use Sylapi\Courier\Abstracts\Parcel as ParcelAbstract;
 
-class EcontParcel extends Parcel
+class Parcel extends ParcelAbstract
 {
     public function validate(): bool
     {

@@ -4,7 +4,7 @@
     "description": "Courier Econt",
     "keywords": [
         "courier",
-        "olza",
+        "econt ",
         "shipping"
     ],
     "homepage": "https://github.com/sylapi/courier-econt",
@@ -15,14 +15,14 @@
         }
     ],     
     "require": {
-        "php": ">=7.4.0",
-        "sylapi/courier": "^2.0",
+        "php": ">=8.2.0",
+        "sylapi/courier": "dev-dev-v3",
         "rakit/validation": "^1.4",
         "guzzlehttp/guzzle": "^7.4"
     },  
     "require-dev": {
-        "phpunit/phpunit": "^9.5",
-        "phpstan/phpstan": "^0.12.77"
+        "phpstan/phpstan": "^1.10",
+        "phpunit/phpunit": "^10.4"
     },
     "autoload": {
         "psr-4": { "Sylapi\\Courier\\Econt\\" : "src/" }

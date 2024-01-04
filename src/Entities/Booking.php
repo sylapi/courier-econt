@@ -2,20 +2,21 @@
 
 declare(strict_types=1);
 
-namespace Sylapi\Courier\Econt;
+namespace Sylapi\Courier\Econt\Entities;
 
 use Rakit\Validation\Validator;
-use Sylapi\Courier\Abstracts\Booking;
+use Sylapi\Courier\Abstracts\Booking as BookingAbstract;
 
-class EcontBooking extends Booking
+class Booking extends BookingAbstract
 {
+
     public function validate(): bool
     {
         $rules = [
             'shipmentId' => 'required',
         ];
         $data = [
-           
+            'shipmentId' => $this->getShipmentId(),
         ];
 
         $validator = new Validator();

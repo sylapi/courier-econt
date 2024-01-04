@@ -6,31 +6,32 @@ namespace Sylapi\Courier\Econt;
 
 
 use Exception;
-use Sylapi\Courier\Entities\Response;
 use Sylapi\Courier\Contracts\Shipment;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
+use Sylapi\Courier\Econt\Entities\Options;
+use Sylapi\Courier\Econt\Helpers\ApiErrorsHelper;
 use Sylapi\Courier\Exceptions\TransportException;
-use Sylapi\Courier\Contracts\CourierCreateShipment;
 use Sylapi\Courier\Contracts\Response as ResponseContract;
-use Sylapi\Courier\Helpers\ResponseHelper;
-use Sylapi\Courier\Econt\Helpers\EcontApiErrorsHelper;
+use Sylapi\Courier\Econt\Responses\Shipment as ShipmentResponse;
+use Sylapi\Courier\Contracts\CourierCreateShipment as CourierCreateShipmentContract;
 
 
-class EcontCourierCreateShipment implements CourierCreateShipment
+
+class CourierCreateShipment implements CourierCreateShipmentContract
 {
     private $session;
 
     const API_PATH = '/services/Shipments/LabelService.createLabel.json';
 
-    public function __construct(EcontSession $session)
+    public function __construct(Session $session)
     {
         $this->session = $session;
     }
 
     public function createShipment(Shipment $shipment): ResponseContract
     {
-        $response = new Response();
+        $response = new ShipmentResponse();
         try {
             $stream = $this->session
             ->client()
@@ -48,32 +49,32 @@ class EcontCourierCreateShipment implements CourierCreateShipment
                 throw new TransportException('Json data response is incorrect');
             }
 
-            $response->shipmentId = $result->label->shipmentNumber;
-            $response->referenceId = $response->shipmentId;
-            if($response->shipmentId === NULL){
+            if($result->label->shipmentNumber === NULL){
                 throw new TransportException('Shipment Id does not exist.');
             }
 
+            $response->setResponse($result);
+            $response->setReferenceId((string) $result->label->shipmentNumber);
+            $response->setShipmentId((string) $result->label->shipmentNumber);
         
         } catch (ClientException $e) {
-            $exception = new TransportException($e->getMessage(), $e->getCode());
-            ResponseHelper::pushErrorsToResponse($response, [$exception]);
+            throw new TransportException($e->getMessage(), $e->getCode());
         } 
         catch (ServerException $e) {
             $responseBody = $e->getResponse()->getBody()->getContents();
-            $message = EcontApiErrorsHelper::buildErrorMessage($responseBody);
-            $exception = new TransportException($message, $e->getCode());
-            ResponseHelper::pushErrorsToResponse($response, [$exception]);
+            throw new TransportException(ApiErrorsHelper::buildErrorMessage($responseBody), $e->getCode());
         } catch (Exception $e) {
-            $exception = new TransportException($e->getMessage(), $e->getCode());       
-            ResponseHelper::pushErrorsToResponse($response, [$exception]);
+            throw new TransportException($e->getMessage(), $e->getCode());       
         }
         return $response;
     }
 
     private function request(Shipment $shipment): array   
     {
-        $parameters = $this->session->parameters();
+        /**
+         * @var Options $options
+         */
+        $options = $shipment->getOptions();
 
         $request = [
             'label' => [
@@ -125,28 +126,29 @@ class EcontCourierCreateShipment implements CourierCreateShipment
                     'other' => ''
                 ],
                 'packCount' =>  $shipment->getQuantity(),
-                'shipmentType' => ($parameters->hasProperty('shipmentType')) ? $parameters->shipmentType : 'PACK',
+                'shipmentType' => $options->getShipmentType(),
                 'weight' => $shipment->getParcel()->getWeight(),
                 'shipmentDescription' => $shipment->getContent(),                            
             ],
-            'mode' => ($parameters->hasProperty('mode')) ? $parameters->mode : 'create', 
+            'mode' => $options->getMode(), 
         ];
 
-        if($parameters->hasProperty('senderClientNumber')) {
-            $request['label']['senderClient']['clientNumber'] = $parameters->senderClientNumber;
+
+        if($options->has('senderClientNumber')) {
+            $request['label']['senderClient']['clientNumber'] = $options->getSenderClientNumber();
         }
 
-        if($parameters->hasProperty('senderOfficeCode')) {
-            $request['label']['senderOfficeCode'] = $parameters->senderOfficeCode;
+        if($options->has('senderOfficeCode')) {
+            $request['label']['senderOfficeCode'] = $options->getSenderOfficeCode();
         }
 
-        if($parameters->hasProperty('paymentSenderMethod')) {
-            $request['label']['paymentSenderMethod'] = $parameters->paymentSenderMethod;
-        }  
-        
-        if($parameters->hasProperty('holidayDeliveryDay')) {
-            $request['label']['holidayDeliveryDay'] = $parameters->holidayDeliveryDay;
-        }          
+        if($options->has('paymentSenderMethod')) {
+            $request['label']['paymentSenderMethod'] = $options->getPaymentSenderMethod();
+        }
+
+        if($options->has('holidayDeliveryDay')) {
+            $request['label']['holidayDeliveryDay'] = $options->getHolidayDeliveryDay();
+        }       
 
         return $request;
     }
