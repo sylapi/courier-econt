@@ -11,6 +11,7 @@ use Sylapi\Courier\Exceptions\TransportException;
 use Sylapi\Courier\Contracts\LabelType as LabelTypeContract;
 use Sylapi\Courier\Econt\Responses\Label as LabelResponse;
 use Sylapi\Courier\Contracts\Response as ResponseContract;
+use Sylapi\Courier\Responses\Label as ResponseLabel;
 
 class CourierGetLabels implements CourierGetLabelsContract
 {
@@ -23,7 +24,7 @@ class CourierGetLabels implements CourierGetLabelsContract
         $this->session = $session;
     }
 
-    public function getLabel(string $shipmentId, LabelTypeContract $labelType): ResponseContract
+    public function getLabel(string $shipmentId, LabelTypeContract $labelType): ResponseLabel
     {
         try {
             $stream = $this->session
