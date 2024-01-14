@@ -12,7 +12,6 @@ use GuzzleHttp\Exception\ServerException;
 use Sylapi\Courier\Econt\Entities\Options;
 use Sylapi\Courier\Econt\Helpers\ApiErrorsHelper;
 use Sylapi\Courier\Exceptions\TransportException;
-use Sylapi\Courier\Contracts\Response as ResponseContract;
 use Sylapi\Courier\Econt\Responses\Shipment as ShipmentResponse;
 use Sylapi\Courier\Contracts\CourierCreateShipment as CourierCreateShipmentContract;
 use Sylapi\Courier\Responses\Shipment as ResponseShipment;
