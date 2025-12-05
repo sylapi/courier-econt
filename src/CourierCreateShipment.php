@@ -133,21 +133,21 @@ class CourierCreateShipment implements CourierCreateShipmentContract
         ];
 
 
-        if($options->has('senderClientNumber')) {
+        if (!empty($options->getSenderClientNumber())) {
             $request['label']['senderClient']['clientNumber'] = $options->getSenderClientNumber();
         }
 
-        if($options->has('senderOfficeCode')) {
+        if (!empty($options->getSenderOfficeCode())) {
             $request['label']['senderOfficeCode'] = $options->getSenderOfficeCode();
         }
 
-        if($options->has('paymentSenderMethod')) {
+        if (!empty($options->getPaymentSenderMethod())) {
             $request['label']['paymentSenderMethod'] = $options->getPaymentSenderMethod();
         }
 
-        if($options->has('holidayDeliveryDay')) {
+        if (!empty($options->getHolidayDeliveryDay())) {
             $request['label']['holidayDeliveryDay'] = $options->getHolidayDeliveryDay();
-        }       
+        }    
 
         return $request;
     }
